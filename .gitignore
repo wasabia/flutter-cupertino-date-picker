@@ -33,3 +33,4 @@ build/
 .flutter-plugins
 /example/android/keystore.properties
 /example/ios/Flutter/flutter_export_environment.sh
+.history
