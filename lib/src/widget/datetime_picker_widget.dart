@@ -16,7 +16,7 @@ import 'date_picker_title_widget.dart';
 /// @since 2019-05-10
 class DateTimePickerWidget extends StatefulWidget {
   DateTimePickerWidget({
-    Key key,
+    Key? key,
     this.minDateTime,
     this.maxDateTime,
     this.initDateTime,
@@ -33,12 +33,12 @@ class DateTimePickerWidget extends StatefulWidget {
     assert(minTime.compareTo(maxTime) < 0);
   }
 
-  final DateTime minDateTime, maxDateTime, initDateTime;
+  final DateTime? minDateTime, maxDateTime, initDateTime;
   final String dateFormat;
   final DateTimePickerLocale locale;
   final DateTimePickerTheme pickerTheme;
-  final DateVoidCallback onCancel;
-  final DateValueCallback onChange, onConfirm;
+  final DateVoidCallback? onCancel;
+  final DateValueCallback? onChange, onConfirm;
   final int minuteDivider;
 
   @override
@@ -50,24 +50,24 @@ class DateTimePickerWidget extends StatefulWidget {
 }
 
 class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
-  DateTime _minTime, _maxTime;
-  int _currDay, _currHour, _currMinute, _currSecond;
-  int _minuteDivider;
-  List<int> _dayRange, _hourRange, _minuteRange, _secondRange;
-  FixedExtentScrollController _dayScrollCtrl,
+  late DateTime _minTime, _maxTime;
+  late int _currDay, _currHour, _currMinute, _currSecond;
+  late int _minuteDivider;
+  late List<int> _dayRange, _hourRange, _minuteRange, _secondRange;
+  late FixedExtentScrollController _dayScrollCtrl,
       _hourScrollCtrl,
       _minuteScrollCtrl,
       _secondScrollCtrl;
 
-  Map<String, FixedExtentScrollController> _scrollCtrlMap;
-  Map<String, List<int>> _valueRangeMap;
+  late Map<String, FixedExtentScrollController> _scrollCtrlMap;
+  late Map<String, List<int>> _valueRangeMap;
 
   bool _isChangeTimeRange = false;
 
   final DateTime _baselineDate = DateTime(1900, 1, 1);
 
-  _DateTimePickerWidgetState(DateTime minTime, DateTime maxTime,
-      DateTime initTime, int minuteDivider) {
+  _DateTimePickerWidgetState(DateTime? minTime, DateTime? maxTime,
+      DateTime? initTime, int minuteDivider) {
     // check minTime value
     if (minTime == null) {
       minTime = DateTime.parse(DATE_PICKER_MIN_DATETIME);
@@ -161,7 +161,7 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
   /// pressed cancel widget
   void _onPressedCancel() {
     if (widget.onCancel != null) {
-      widget.onCancel();
+      widget.onCancel!();
     }
     Navigator.pop(context);
   }
@@ -172,7 +172,7 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
       DateTime day = _baselineDate.add(Duration(days: _currDay));
       DateTime dateTime = DateTime(
           day.year, day.month, day.day, _currHour, _currMinute, _currSecond);
-      widget.onConfirm(dateTime, _calcSelectIndexList());
+      widget.onConfirm!(dateTime, _calcSelectIndexList());
     }
     Navigator.pop(context);
   }
@@ -183,35 +183,35 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
       DateTime day = _baselineDate.add(Duration(days: _currDay));
       DateTime dateTime = DateTime(
           day.year, day.month, day.day, _currHour, _currMinute, _currSecond);
-      widget.onChange(dateTime, _calcSelectIndexList());
+      widget.onChange!(dateTime, _calcSelectIndexList());
     }
   }
 
   /// find scroll controller by specified format
   FixedExtentScrollController _findScrollCtrl(String format) {
-    FixedExtentScrollController scrollCtrl;
+    FixedExtentScrollController? scrollCtrl;
     _scrollCtrlMap.forEach((key, value) {
       if (format.contains(key)) {
         scrollCtrl = value;
       }
     });
-    return scrollCtrl;
+    return scrollCtrl!;
   }
 
   /// find item value range by specified format
   List<int> _findPickerItemRange(String format) {
-    List<int> valueRange;
+    List<int>? valueRange;
     _valueRangeMap.forEach((key, value) {
       if (format.contains(key)) {
         valueRange = value;
       }
     });
-    return valueRange;
+    return valueRange!;
   }
 
   /// render the picker widget of year、month and day
   Widget _renderDatePickerWidget() {
-    List<Widget> pickers = List<Widget>();
+    List<Widget> pickers = [];
     List<String> formatArr = DateTimeFormatter.splitDateFormat(
         widget.dateFormat,
         mode: DateTimePickerMode.datetime);
@@ -224,6 +224,7 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
       scrollCtrl: _dayScrollCtrl,
       valueRange: _dayRange,
       format: dayFormat,
+      minuteDivider: widget.minuteDivider,
       valueChanged: (value) {
         _changeDaySelection(value);
       },
@@ -260,13 +261,13 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
   }
 
   Widget _renderDatePickerColumnComponent({
-    @required FixedExtentScrollController scrollCtrl,
-    @required List<int> valueRange,
-    @required String format,
-    @required ValueChanged<int> valueChanged,
-    int minuteDivider,
-    int flex,
-    IndexedWidgetBuilder itemBuilder,
+    required FixedExtentScrollController scrollCtrl,
+    required List<int> valueRange,
+    required String format,
+    required ValueChanged<int> valueChanged,
+    required int minuteDivider,
+    int? flex,
+    IndexedWidgetBuilder? itemBuilder,
   }) {
     IndexedWidgetBuilder builder = itemBuilder != null
         ? itemBuilder
@@ -297,7 +298,7 @@ class _DateTimePickerWidgetState extends State<DateTimePickerWidget> {
       ),
     );
     return Expanded(
-      flex: flex,
+      flex: flex ?? 1,
       child: columnWidget,
     );
   }

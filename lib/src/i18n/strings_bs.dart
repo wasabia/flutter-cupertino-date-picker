@@ -34,7 +34,7 @@ class _StringsBs extends _StringsI18n {
 
   @override
   List<String> getMonthsShort() {
-    return null;
+    return ["null"];
   }
 
   @override
